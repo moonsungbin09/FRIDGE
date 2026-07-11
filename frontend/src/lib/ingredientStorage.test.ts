@@ -55,6 +55,7 @@ describe('ingredientStorage', () => {
 
     expect(getIngredients()).toEqual([])
     expect(addIngredient('eggs')).toEqual(['eggs'])
-    expect(removeIngredient('eggs')).toEqual([])
+    expect(addIngredient('milk')).toEqual(['eggs', 'milk'])
+    expect(removeIngredient(' milk ')).toEqual(['eggs'])
   })
 })

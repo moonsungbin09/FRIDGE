@@ -1,6 +1,7 @@
 import type { IngredientName } from '../types'
 
 export const STORAGE_KEY = 'fridge-app.ingredients'
+let cachedIngredients: IngredientName[] = []
 
 function getStorage(): Storage | null {
   try {
@@ -17,7 +18,7 @@ function getStorage(): Storage | null {
 export function getIngredients(): IngredientName[] {
   const storage = getStorage()
   if (!storage) {
-    return []
+    return cachedIngredients
   }
 
   const raw = storage.getItem(STORAGE_KEY)
@@ -27,15 +28,18 @@ export function getIngredients(): IngredientName[] {
 
   try {
     const parsed = JSON.parse(raw)
-    return Array.isArray(parsed)
+    const ingredients = Array.isArray(parsed)
       ? parsed.filter((value): value is IngredientName => typeof value === 'string')
       : []
+    cachedIngredients = ingredients
+    return ingredients
   } catch {
-    return []
+    return cachedIngredients
   }
 }
 
 function setIngredients(ingredients: IngredientName[]): IngredientName[] {
+  cachedIngredients = ingredients
   const storage = getStorage()
   if (storage) {
     try {
@@ -60,6 +64,7 @@ export function addIngredient(input: string): IngredientName[] {
 }
 
 export function removeIngredient(name: IngredientName): IngredientName[] {
-  const nextIngredients = getIngredients().filter((ingredient) => ingredient !== name)
+  const target = name.trim()
+  const nextIngredients = getIngredients().filter((ingredient) => ingredient !== target)
   return setIngredients(nextIngredients)
 }
