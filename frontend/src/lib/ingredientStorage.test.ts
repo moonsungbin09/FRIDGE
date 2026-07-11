@@ -44,4 +44,17 @@ describe('ingredientStorage', () => {
     expect(removeIngredient('milk')).toEqual([])
     expect(getIngredients()).toEqual([])
   })
+
+  it('falls back safely when localStorage is unavailable', () => {
+    Object.defineProperty(globalThis, 'localStorage', {
+      configurable: true,
+      get: () => {
+        throw new Error('storage blocked')
+      },
+    })
+
+    expect(getIngredients()).toEqual([])
+    expect(addIngredient('eggs')).toEqual(['eggs'])
+    expect(removeIngredient('eggs')).toEqual([])
+  })
 })

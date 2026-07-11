@@ -3,7 +3,11 @@ import type { IngredientName } from '../types'
 export const STORAGE_KEY = 'fridge-app.ingredients'
 
 function getStorage(): Storage | null {
-  if (typeof globalThis.localStorage === 'undefined') {
+  try {
+    if (typeof globalThis.localStorage === 'undefined') {
+      return null
+    }
+  } catch {
     return null
   }
 
@@ -34,7 +38,11 @@ export function getIngredients(): IngredientName[] {
 function setIngredients(ingredients: IngredientName[]): IngredientName[] {
   const storage = getStorage()
   if (storage) {
-    storage.setItem(STORAGE_KEY, JSON.stringify(ingredients))
+    try {
+      storage.setItem(STORAGE_KEY, JSON.stringify(ingredients))
+    } catch {
+      return ingredients
+    }
   }
 
   return ingredients
