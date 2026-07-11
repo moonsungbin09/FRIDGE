@@ -13,43 +13,52 @@ type RecipeSummaryRequest = {
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === "string");
 
-const router = Router();
+export type RecipeSummaryGenerator = (prompt: string) => Promise<string>;
 
-router.post("/summary", async (req, res) => {
-  const payload =
-    (req.body as RecipeSummaryRequest) ?? {};
-  const selectedRecipe =
-    payload.recipe && typeof payload.recipe === "object"
-      ? (payload.recipe as RecipeSummaryRequest)
-      : payload;
-  const recipeName = selectedRecipe.recipeName ?? selectedRecipe.name;
-  const ingredients = selectedRecipe.ingredients;
-  const missingIngredients = selectedRecipe.missingIngredients;
+export const createRecipesRouter = (
+  generateSummary: RecipeSummaryGenerator = generateRecipeSummary,
+): Router => {
+  const router = Router();
 
-  if (
-    typeof recipeName !== "string" ||
-    !isStringArray(ingredients) ||
-    !isStringArray(missingIngredients)
-  ) {
-    res.status(400).json({
-      error:
-        "Invalid payload. Expected recipeName, ingredients, and missingIngredients.",
-    });
-    return;
-  }
+  router.post("/summary", async (req, res) => {
+    const payload = (req.body as RecipeSummaryRequest) ?? {};
+    const selectedRecipe =
+      payload.recipe && typeof payload.recipe === "object"
+        ? (payload.recipe as RecipeSummaryRequest)
+        : payload;
+    const recipeName = selectedRecipe.recipeName ?? selectedRecipe.name;
+    const ingredients = selectedRecipe.ingredients;
+    const missingIngredients = selectedRecipe.missingIngredients;
 
-  try {
-    const prompt = buildRecipeSummaryPrompt({
-      recipeName,
-      ingredients,
-      missingIngredients,
-    });
-    const summary = await generateRecipeSummary(prompt);
-    res.json({ summary });
-  } catch (error) {
-    console.error("Failed to generate recipe summary:", error);
-    res.status(502).json({ error: "Failed to generate recipe summary" });
-  }
-});
+    if (
+      typeof recipeName !== "string" ||
+      !isStringArray(ingredients) ||
+      !isStringArray(missingIngredients)
+    ) {
+      res.status(400).json({
+        error:
+          "Invalid payload. Expected recipeName, ingredients, and missingIngredients.",
+      });
+      return;
+    }
+
+    try {
+      const prompt = buildRecipeSummaryPrompt({
+        recipeName,
+        ingredients,
+        missingIngredients,
+      });
+      const summary = await generateSummary(prompt);
+      res.json({ summary });
+    } catch (error) {
+      console.error("Failed to generate recipe summary:", error);
+      res.status(502).json({ error: "Failed to generate recipe summary" });
+    }
+  });
+
+  return router;
+};
+
+const router = createRecipesRouter();
 
 export default router;
