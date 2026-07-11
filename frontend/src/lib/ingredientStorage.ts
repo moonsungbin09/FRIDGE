@@ -7,6 +7,10 @@ export function resetIngredientStorageCacheForTests(): void {
   cachedIngredients = []
 }
 
+function normalizeIngredient(value: string): string {
+  return value.trim().replace(/\s+/g, ' ')
+}
+
 function getStorage(): Storage | null {
   try {
     if (typeof globalThis.localStorage === 'undefined') {
@@ -59,7 +63,7 @@ function setIngredients(ingredients: IngredientName[]): IngredientName[] {
 }
 
 export function addIngredient(input: string): IngredientName[] {
-  const candidate = input.trim()
+  const candidate = normalizeIngredient(input)
   const ingredients = getIngredients()
 
   if (!candidate || ingredients.includes(candidate)) {
@@ -70,7 +74,7 @@ export function addIngredient(input: string): IngredientName[] {
 }
 
 export function removeIngredient(name: IngredientName): IngredientName[] {
-  const target = name.trim()
+  const target = normalizeIngredient(name)
   const nextIngredients = getIngredients().filter((ingredient) => ingredient !== target)
   return setIngredients(nextIngredients)
 }

@@ -40,9 +40,12 @@ describe('ingredientStorage', () => {
 
     expect(addIngredient('  milk  ')).toEqual(['milk'])
     expect(addIngredient('milk')).toEqual(['milk'])
-    expect(addIngredient('')).toEqual(['milk'])
+    expect(addIngredient('soy   milk')).toEqual(['milk', 'soy milk'])
+    expect(addIngredient('soy milk')).toEqual(['milk', 'soy milk'])
+    expect(addIngredient('')).toEqual(['milk', 'soy milk'])
 
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')).toEqual(['milk'])
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')).toEqual(['milk', 'soy milk'])
+    expect(removeIngredient(' soy   milk ')).toEqual(['milk'])
     expect(removeIngredient('milk')).toEqual([])
     expect(getIngredients()).toEqual([])
   })
