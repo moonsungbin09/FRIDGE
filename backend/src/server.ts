@@ -1,5 +1,6 @@
 import express from "express";
 import { prisma } from "./lib/prisma";
+import recipesRouter from "./routes/recipes";
 
 const app = express();
 const parsedPort = Number.parseInt(process.env.PORT ?? "", 10);
@@ -7,6 +8,9 @@ const port =
   Number.isInteger(parsedPort) && parsedPort >= 1 && parsedPort <= 65535
     ? parsedPort
     : 4000;
+
+app.use(express.json());
+app.use("/api/recipes", recipesRouter);
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
