@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const prisma_1 = require("./lib/prisma");
+const node_path_1 = __importDefault(require("node:path"));
 const recipes_1 = __importDefault(require("./routes/recipes"));
 const app = (0, express_1.default)();
 const parsedPort = Number.parseInt(process.env.PORT ?? "", 10);
@@ -16,14 +16,12 @@ app.use("/api/recipes", recipes_1.default);
 app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
 });
-const start = async () => {
-    try {
-        await prisma_1.prisma.$connect();
-    }
-    catch (error) {
-        console.error("Failed to connect to PostgreSQL:", error);
-        process.exit(1);
-    }
+const publicDir = node_path_1.default.resolve(process.cwd(), "public");
+app.use(express_1.default.static(publicDir));
+app.get("/{*path}", (_req, res) => {
+    res.sendFile(node_path_1.default.join(publicDir, "index.html"));
+});
+const start = () => {
     const server = app.listen(port, () => {
         console.log(`Server running on port ${port}`);
     });
@@ -33,16 +31,9 @@ const start = async () => {
     });
     const shutdown = (signal) => {
         console.log(`Received ${signal}, shutting down gracefully...`);
-        server.close(async (error) => {
+        server.close((error) => {
             if (error) {
                 console.error("Error during server shutdown:", error);
-                process.exit(1);
-            }
-            try {
-                await prisma_1.prisma.$disconnect();
-            }
-            catch (disconnectError) {
-                console.error("Error disconnecting Prisma:", disconnectError);
                 process.exit(1);
             }
             console.log("Server stopped");
@@ -52,4 +43,4 @@ const start = async () => {
     process.on("SIGINT", () => shutdown("SIGINT"));
     process.on("SIGTERM", () => shutdown("SIGTERM"));
 };
-void start();
+start();

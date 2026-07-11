@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "./lib/prisma";
+import path from "node:path";
 import recipesRouter from "./routes/recipes";
 
 const app = express();
@@ -16,14 +16,13 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-const start = async () => {
-  try {
-    await prisma.$connect();
-  } catch (error) {
-    console.error("Failed to connect to PostgreSQL:", error);
-    process.exit(1);
-  }
+const publicDir = path.resolve(process.cwd(), "public");
+app.use(express.static(publicDir));
+app.get("/{*path}", (_req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
 
+const start = () => {
   const server = app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
@@ -35,16 +34,9 @@ const start = async () => {
 
   const shutdown = (signal: NodeJS.Signals) => {
     console.log(`Received ${signal}, shutting down gracefully...`);
-    server.close(async (error) => {
+    server.close((error) => {
       if (error) {
         console.error("Error during server shutdown:", error);
-        process.exit(1);
-      }
-
-      try {
-        await prisma.$disconnect();
-      } catch (disconnectError) {
-        console.error("Error disconnecting Prisma:", disconnectError);
         process.exit(1);
       }
 
@@ -57,4 +49,4 @@ const start = async () => {
   process.on("SIGTERM", () => shutdown("SIGTERM"));
 };
 
-void start();
+start();
