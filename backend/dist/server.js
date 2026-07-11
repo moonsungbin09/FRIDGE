@@ -13,12 +13,22 @@ const port = Number.isInteger(parsedPort) && parsedPort >= 1 && parsedPort <= 65
     : 4000;
 app.use(express_1.default.json());
 app.use("/api/recipes", recipes_1.default);
+app.use("/api", (_req, res) => {
+    res.status(404).json({ error: "Not found" });
+});
+app.use("/api/{*path}", (_req, res) => {
+    res.status(404).json({ error: "Not found" });
+});
 app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
 });
 const publicDir = node_path_1.default.resolve(process.cwd(), "public");
 app.use(express_1.default.static(publicDir));
-app.get("/{*path}", (_req, res) => {
+app.get("/{*path}", (req, res, next) => {
+    if (req.path === "/api" || req.path.startsWith("/api/")) {
+        next();
+        return;
+    }
     res.sendFile(node_path_1.default.join(publicDir, "index.html"));
 });
 const start = () => {
