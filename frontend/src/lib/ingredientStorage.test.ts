@@ -3,6 +3,7 @@ import {
   addIngredient,
   getIngredients,
   removeIngredient,
+  resetIngredientStorageCacheForTests,
   STORAGE_KEY,
 } from './ingredientStorage'
 
@@ -27,6 +28,7 @@ function createStorageMock(): Storage {
 
 describe('ingredientStorage', () => {
   beforeEach(() => {
+    resetIngredientStorageCacheForTests()
     Object.defineProperty(globalThis, 'localStorage', {
       configurable: true,
       value: createStorageMock(),
@@ -46,6 +48,7 @@ describe('ingredientStorage', () => {
   })
 
   it('falls back safely when localStorage is unavailable', () => {
+    resetIngredientStorageCacheForTests()
     Object.defineProperty(globalThis, 'localStorage', {
       configurable: true,
       get: () => {

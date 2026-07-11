@@ -3,6 +3,10 @@ import type { IngredientName } from '../types'
 export const STORAGE_KEY = 'fridge-app.ingredients'
 let cachedIngredients: IngredientName[] = []
 
+export function resetIngredientStorageCacheForTests(): void {
+  cachedIngredients = []
+}
+
 function getStorage(): Storage | null {
   try {
     if (typeof globalThis.localStorage === 'undefined') {
@@ -23,6 +27,7 @@ export function getIngredients(): IngredientName[] {
 
   const raw = storage.getItem(STORAGE_KEY)
   if (!raw) {
+    cachedIngredients = []
     return []
   }
 
@@ -34,6 +39,7 @@ export function getIngredients(): IngredientName[] {
     cachedIngredients = ingredients
     return ingredients
   } catch {
+    cachedIngredients = []
     return cachedIngredients
   }
 }
