@@ -64,4 +64,11 @@ describe('ingredientStorage', () => {
     expect(addIngredient('milk')).toEqual(['eggs', 'milk'])
     expect(removeIngredient(' milk ')).toEqual(['eggs'])
   })
+
+  it('normalizes legacy stored values on load', () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(['soy   milk', 'soy milk', '  tofu  ']))
+
+    expect(getIngredients()).toEqual(['soy milk', 'tofu'])
+    expect(removeIngredient('soy milk')).toEqual(['tofu'])
+  })
 })

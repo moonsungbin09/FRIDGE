@@ -11,6 +11,14 @@ function normalizeIngredient(value: string): string {
   return value.trim().replace(/\s+/g, ' ')
 }
 
+function canonicalizeIngredients(values: unknown[]): IngredientName[] {
+  return values
+    .filter((value): value is string => typeof value === 'string')
+    .map(normalizeIngredient)
+    .filter((value): value is IngredientName => value.length > 0)
+    .filter((value, index, array) => array.indexOf(value) === index)
+}
+
 function getStorage(): Storage | null {
   try {
     if (typeof globalThis.localStorage === 'undefined') {
@@ -37,9 +45,7 @@ export function getIngredients(): IngredientName[] {
 
   try {
     const parsed = JSON.parse(raw)
-    const ingredients = Array.isArray(parsed)
-      ? parsed.filter((value): value is IngredientName => typeof value === 'string')
-      : []
+    const ingredients = Array.isArray(parsed) ? canonicalizeIngredients(parsed) : []
     cachedIngredients = ingredients
     return ingredients
   } catch {
