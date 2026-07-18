@@ -9,17 +9,17 @@ type RecipeSuggestionsProps = {
 export function RecipeSuggestions({ recipes, selectedRecipeId, onSelectRecipe }: RecipeSuggestionsProps) {
   return (
     <section>
-      <h2>Recipe suggestions</h2>
+      <h2>추천 메뉴</h2>
       {recipes.length === 0 ? (
-        <p className="empty-state">No matches yet. Add more ingredients and try again.</p>
+        <p className="empty-state">추천 가능한 메뉴가 없어요. 재료를 더 추가해보세요.</p>
       ) : (
         <ul className="recipe-list">
           {recipes.map((recipe) => {
             const isSelected = recipe.id === selectedRecipeId
             const missingLabel =
               recipe.missingIngredients.length === 0
-                ? 'Ready to cook'
-                : `Missing: ${recipe.missingIngredients.join(', ')}`
+                ? '바로 조리 가능'
+                : `부족 재료: ${recipe.missingIngredients.join(', ')}`
 
             return (
               <li key={recipe.id}>

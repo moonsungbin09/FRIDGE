@@ -42,13 +42,13 @@ function App() {
     const timer = setTimeout(() => {
       if (!selectedRecipe) {
         setDetailStatus('error')
-        setDetailError('Selected recipe is no longer available.')
+        setDetailError('선택한 레시피를 찾을 수 없어요.')
         return
       }
 
       if (!selectedRecipe.summary.trim()) {
         setDetailStatus('error')
-        setDetailError('Recipe summary is unavailable right now.')
+        setDetailError('레시피 요약 정보를 불러오지 못했어요.')
         return
       }
 
@@ -67,9 +67,9 @@ function App() {
   if (screen === 'recipes') {
     return (
       <main className="recipe-screen">
-        <h1>Recipe Recommendation</h1>
+        <h1>레시피 추천</h1>
         <p>
-          Saved ingredients: <strong>{availableIngredients.length === 0 ? 'None' : availableIngredients.join(', ')}</strong>
+          저장된 재료: <strong>{availableIngredients.length === 0 ? '없음' : availableIngredients.join(', ')}</strong>
         </p>
         <div className="recipe-layout">
           <RecipeSuggestions
@@ -80,7 +80,7 @@ function App() {
           <RecipeDetail status={detailStatus} recipe={selectedRecipe} errorMessage={detailError} />
         </div>
         <button type="button" onClick={() => setScreen('home')}>
-          Back to home
+          홈으로
         </button>
       </main>
     )

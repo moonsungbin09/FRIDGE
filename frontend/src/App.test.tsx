@@ -59,7 +59,7 @@ describe('App recipe flow', () => {
       recipeButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
-    expect(container.textContent).toContain('Loading recipe summary...')
+    expect(container.textContent).toContain('레시피 요약을 불러오는 중...')
 
     await act(async () => {
       vi.advanceTimersByTime(350)
@@ -67,7 +67,7 @@ describe('App recipe flow', () => {
 
     expect(container.textContent).toContain('토마토 파스타')
     expect(container.textContent).toContain('토마토와 치즈를 활용해 만드는 간단한 홈스타일 파스타입니다.')
-    expect(container.textContent).toContain('Required ingredients: 토마토, 치즈, 면')
+    expect(container.textContent).toContain('필요한 재료: 토마토, 치즈, 면')
   })
 
   it('홈 화면에서 냉장고 히어로 문구와 액션 버튼이 보인다', async () => {

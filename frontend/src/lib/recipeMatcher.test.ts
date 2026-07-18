@@ -17,4 +17,10 @@ describe('findRecipeMatches', () => {
     expect(stew).toBeDefined()
     expect(stew?.missingIngredients).toEqual([])
   })
+
+  it('returns at least four recommendations for common ingredient combinations', () => {
+    const matches = findRecipeMatches(['토마토', '치즈'])
+
+    expect(matches.length).toBeGreaterThanOrEqual(4)
+  })
 })

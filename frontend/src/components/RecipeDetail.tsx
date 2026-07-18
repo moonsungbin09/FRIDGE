@@ -11,14 +11,14 @@ type RecipeDetailProps = {
 export function RecipeDetail({ status, recipe, errorMessage }: RecipeDetailProps) {
   return (
     <section className="recipe-detail">
-      <h2>Recipe detail</h2>
-      {status === 'idle' && <p className="empty-state">Select a recipe to view details.</p>}
+      <h2>레시피 상세</h2>
+      {status === 'idle' && <p className="empty-state">메뉴를 선택하면 상세 정보를 볼 수 있어요.</p>}
 
-      {status === 'loading' && <p>Loading recipe summary...</p>}
+      {status === 'loading' && <p>레시피 요약을 불러오는 중...</p>}
 
       {status === 'error' && (
         <p className="error-state" role="alert">
-          {errorMessage ?? 'Unable to load recipe details.'}
+          {errorMessage ?? '레시피 상세 정보를 불러오지 못했어요.'}
         </p>
       )}
 
@@ -27,11 +27,11 @@ export function RecipeDetail({ status, recipe, errorMessage }: RecipeDetailProps
           <h3>{recipe.name}</h3>
           <p>{recipe.summary}</p>
           <p>
-            Required ingredients: <strong>{recipe.requiredIngredients.join(', ')}</strong>
+            필요한 재료: <strong>{recipe.requiredIngredients.join(', ')}</strong>
           </p>
           <p>
-            Missing ingredients:{' '}
-            <strong>{recipe.missingIngredients.length === 0 ? 'None' : recipe.missingIngredients.join(', ')}</strong>
+            부족한 재료:{' '}
+            <strong>{recipe.missingIngredients.length === 0 ? '없음' : recipe.missingIngredients.join(', ')}</strong>
           </p>
         </article>
       )}
