@@ -104,28 +104,10 @@ describe('App recipe flow', () => {
     const soySauceCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
       card.textContent?.includes('간장'),
     )
-    const sugarCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
-      card.textContent?.includes('설탕'),
-    )
-    const butterCard = Array.from(container.querySelectorAll('.ingredient-card.optional')).find((card) =>
-      card.textContent?.includes('버터'),
-    )
-    const kimchiCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
-      card.textContent?.includes('김치'),
-    )
-    const tofuCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
-      card.textContent?.includes('두부'),
-    )
-    const oilCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
-      card.textContent?.includes('식용유'),
-    )
+    const ingredientImages = container.querySelectorAll('.ingredient-card-image')
 
-    expect(soySauceCard?.textContent).toContain('🍶')
-    expect(sugarCard?.textContent).toContain('🍬')
-    expect(butterCard?.textContent).toContain('🧈')
-    expect(kimchiCard?.textContent).toContain('🥬')
-    expect(tofuCard?.textContent).toContain('🫘')
-    expect(oilCard?.textContent).toContain('🫒')
+    expect(soySauceCard).toBeDefined()
+    expect(ingredientImages.length).toBe(0)
   })
 
   it('AI 추천이 실패해도 기본 레시피 추천을 보여준다', async () => {

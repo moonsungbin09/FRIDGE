@@ -51,31 +51,6 @@ function parseMissingIngredients(
   })
 }
 
-function getIngredientEmoji(ingredientName: string): string {
-  const source = ingredientName.toLowerCase()
-
-  if (source.includes('당근')) return '🥕'
-  if (source.includes('간장')) return '🍶'
-  if (source.includes('설탕')) return '🍬'
-  if (source.includes('버터')) return '🧈'
-  if (source.includes('소금')) return '🧂'
-  if (source.includes('후추')) return '🌶️'
-  if (source.includes('김치')) return '🥬'
-  if (source.includes('두부')) return '🫘'
-  if (source.includes('토마토')) return '🍅'
-  if (source.includes('치즈')) return '🧀'
-  if (source.includes('달걀') || source.includes('계란')) return '🥚'
-  if (source.includes('우유')) return '🥛'
-  if (source.includes('양파')) return '🧅'
-  if (source.includes('감자')) return '🥔'
-  if (source.includes('마늘')) return '🧄'
-  if (source.includes('고추')) return '🌶️'
-  if (source.includes('밥')) return '🍚'
-  if (source.includes('면')) return '🍜'
-  if (source.includes('식용유') || source.includes('오일') || source.includes('기름')) return '🫒'
-  return '🥣'
-}
-
 function IngredientCards({
   title,
   items,
@@ -99,9 +74,6 @@ function IngredientCards({
               key={`${title}-${item.name}`}
               className={`ingredient-card ${cardType} ${item.isOptional ? 'optional' : 'required'}`}
             >
-              <span className="ingredient-card-image" aria-hidden>
-                {getIngredientEmoji(item.name)}
-              </span>
               <strong>{item.name}</strong>
               <small>{cardType === 'missing' ? '부족 재료' : item.isOptional ? '선택 재료' : '필수 재료'}</small>
             </article>
