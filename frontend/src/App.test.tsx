@@ -80,4 +80,13 @@ describe('App recipe flow', () => {
     expect(container.textContent).toContain('재료 관리하기')
     expect(container.textContent).toContain('레시피 보러가기')
   })
+
+  it('홈 화면 액션 카드에 배지가 보인다', async () => {
+    await act(async () => {
+      root.render(<App />)
+    })
+
+    expect(container.textContent).toContain('기본 관리')
+    expect(container.textContent).toContain('AI 추천')
+  })
 })
