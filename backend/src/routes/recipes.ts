@@ -1,5 +1,9 @@
 import { Router } from "express";
 import { generateRecipeSummary } from "../services/azureOpenAi";
+import {
+  generateRecipeRecommendations,
+  type RecipeRecommendation,
+} from "../services/foundryRecipes";
 import { buildRecipeSummaryPrompt } from "../services/recipePrompt";
 
 type RecipeSummaryRequest = {
@@ -14,11 +18,35 @@ const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === "string");
 
 export type RecipeSummaryGenerator = (prompt: string) => Promise<string>;
+export type RecipeRecommendationsGenerator = (
+  ingredients: string[],
+) => Promise<RecipeRecommendation[]>;
 
 export const createRecipesRouter = (
   generateSummary: RecipeSummaryGenerator = generateRecipeSummary,
+  generateRecommendations: RecipeRecommendationsGenerator = generateRecipeRecommendations,
 ): Router => {
   const router = Router();
+
+  router.post("/recommendations", async (req, res) => {
+    const payload = (req.body as { ingredients?: unknown }) ?? {};
+    const { ingredients } = payload;
+
+    if (!isStringArray(ingredients) || ingredients.length === 0) {
+      res.status(400).json({
+        error: "잘못된 요청입니다. ingredients는 비어 있지 않은 문자열 배열이어야 합니다.",
+      });
+      return;
+    }
+
+    try {
+      const recipes = await generateRecommendations(ingredients);
+      res.json({ recipes });
+    } catch (error) {
+      console.error("Failed to generate recipe recommendations:", error);
+      res.status(502).json({ error: "AI 레시피 추천 생성에 실패했습니다." });
+    }
+  });
 
   router.post("/summary", async (req, res) => {
     const payload = (req.body as RecipeSummaryRequest) ?? {};
@@ -36,8 +64,7 @@ export const createRecipesRouter = (
       !isStringArray(missingIngredients)
     ) {
       res.status(400).json({
-        error:
-          "Invalid payload. Expected recipeName, ingredients, and missingIngredients.",
+        error: "잘못된 요청입니다. recipeName, ingredients, missingIngredients가 필요합니다.",
       });
       return;
     }
@@ -52,7 +79,7 @@ export const createRecipesRouter = (
       res.json({ summary });
     } catch (error) {
       console.error("Failed to generate recipe summary:", error);
-      res.status(502).json({ error: "Failed to generate recipe summary" });
+      res.status(502).json({ error: "레시피 요약 생성에 실패했습니다." });
     }
   });
 

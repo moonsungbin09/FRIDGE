@@ -57,7 +57,7 @@ test("POST /api/recipes/summary returns summary for a valid payload", async () =
     assert.equal(response.status, 200);
     assert.deepEqual(body, { summary: "Quick recipe summary" });
     assert.equal(prompts.length, 1);
-    assert.match(prompts[0], /Recipe name: Kimchi Fried Rice/);
+    assert.match(prompts[0], /레시피 이름: Kimchi Fried Rice/);
   } finally {
     await server.close();
   }
@@ -79,7 +79,7 @@ test("POST /api/recipes/summary returns 400 for an invalid payload", async () =>
     const body = (await response.json()) as { error: string };
 
     assert.equal(response.status, 400);
-    assert.match(body.error, /Invalid payload/);
+    assert.match(body.error, /잘못된 요청/);
   } finally {
     await server.close();
   }
@@ -105,7 +105,7 @@ test("POST /api/recipes/summary returns 502 when summary generation fails", asyn
     const body = (await response.json()) as { error: string };
 
     assert.equal(response.status, 502);
-    assert.equal(body.error, "Failed to generate recipe summary");
+    assert.equal(body.error, "레시피 요약 생성에 실패했습니다.");
   } finally {
     console.error = originalConsoleError;
     await server.close();

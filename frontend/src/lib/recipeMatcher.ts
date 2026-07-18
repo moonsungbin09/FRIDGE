@@ -1,13 +1,7 @@
-import type { IngredientName } from '../types'
+import type { IngredientName, RecipeSuggestion } from '../types'
 import { recipeMatches } from '../data/recipeMatches'
 
-export type RecipeMatchResult = {
-  id: string
-  name: string
-  requiredIngredients: IngredientName[]
-  missingIngredients: IngredientName[]
-  summary: string
-}
+export type RecipeMatchResult = RecipeSuggestion
 
 function normalizeIngredient(value: string): string {
   return value.trim().replace(/\s+/g, ' ')
@@ -31,6 +25,7 @@ export function findRecipeMatches(ingredients: IngredientName[]): RecipeMatchRes
       return {
         ...recipe,
         missingIngredients,
+        steps: [],
       }
     })
     .filter((recipe) => recipe.missingIngredients.length < recipe.requiredIngredients.length)

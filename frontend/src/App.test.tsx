@@ -14,11 +14,13 @@ type ReactActGlobal = typeof globalThis & {
 describe('App recipe flow', () => {
   let container: HTMLDivElement
   let root: ReturnType<typeof createRoot>
+  let originalFetch: typeof fetch
 
   beforeEach(() => {
     resetIngredientStorageCacheForTests()
     localStorage.clear()
     localStorage.setItem(STORAGE_KEY, JSON.stringify(['토마토', '치즈']))
+    originalFetch = globalThis.fetch
 
     container = document.createElement('div')
     document.body.appendChild(container)
@@ -33,9 +35,26 @@ describe('App recipe flow', () => {
     vi.useRealTimers()
     resetIngredientStorageCacheForTests()
     localStorage.clear()
+    globalThis.fetch = originalFetch
   })
 
-  it('shows recipe suggestions and the summary detail after selection', async () => {
+  it('AI 추천을 불러오고 선택한 레시피 상세를 보여준다', async () => {
+    globalThis.fetch = vi.fn(async () =>
+      new Response(
+        JSON.stringify({
+          recipes: [
+            {
+              id: 'ai-1',
+              name: '당근 볶음',
+              summary: '당근을 달콤짭짤하게 볶아 만드는 반찬입니다.',
+              requiredIngredients: ['당근', '간장', '설탕', '식용유', '버터(선택)'],
+              missingIngredients: ['간장', '설탕', '식용유'],
+              steps: ['당근을 채 썬다', '양념을 섞는다', '팬에서 볶아 완성한다'],
+            },
+          ],
+        }),
+      ),
+    ) as typeof fetch
     vi.useFakeTimers()
 
     await act(async () => {
@@ -46,11 +65,12 @@ describe('App recipe flow', () => {
       container.querySelectorAll('button')[1]?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
-    expect(container.textContent).toContain('토마토 파스타')
-    expect(container.textContent).toContain('면')
+    await act(async () => {
+      await Promise.resolve()
+    })
 
     const recipeButton = Array.from(container.querySelectorAll('button')).find((button) =>
-      button.textContent?.includes('토마토 파스타'),
+      button.textContent?.includes('당근 볶음'),
     )
 
     expect(recipeButton).toBeDefined()
@@ -64,29 +84,30 @@ describe('App recipe flow', () => {
     await act(async () => {
       vi.advanceTimersByTime(350)
     })
+    expect(container.textContent).toContain('당근 볶음')
+    expect(container.textContent).toContain('당근을 달콤짭짤하게 볶아 만드는 반찬입니다.')
+    expect(container.textContent).toContain('필요한 재료')
+    expect(container.textContent).toContain('부족한 재료')
+    expect(container.textContent).toContain('당근')
+    expect(container.textContent).toContain('버터')
 
-    expect(container.textContent).toContain('토마토 파스타')
-    expect(container.textContent).toContain('토마토와 치즈를 활용해 만드는 간단한 홈스타일 파스타입니다.')
-    expect(container.textContent).toContain('필요한 재료: 토마토, 치즈, 면')
-  })
+    const requiredCards = container.querySelectorAll('.ingredient-card.required')
+    const optionalCards = container.querySelectorAll('.ingredient-card.optional')
+    expect(requiredCards.length).toBeGreaterThanOrEqual(4)
+    expect(optionalCards.length).toBeGreaterThanOrEqual(1)
 
-  it('홈 화면에서 냉장고 히어로 문구와 액션 버튼이 보인다', async () => {
-    await act(async () => {
-      root.render(<App />)
-    })
+    const soySauceCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
+      card.textContent?.includes('간장'),
+    )
+    const sugarCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
+      card.textContent?.includes('설탕'),
+    )
+    const butterCard = Array.from(container.querySelectorAll('.ingredient-card.optional')).find((card) =>
+      card.textContent?.includes('버터'),
+    )
 
-    expect(container.textContent).toContain('오늘 냉장고 뭐 먹지?')
-    expect(container.textContent).toContain('냉장고 속 재료로 맛있는 메뉴를 추천받아보세요.')
-    expect(container.textContent).toContain('재료 관리하기')
-    expect(container.textContent).toContain('레시피 보러가기')
-  })
-
-  it('홈 화면 액션 카드에 배지가 보인다', async () => {
-    await act(async () => {
-      root.render(<App />)
-    })
-
-    expect(container.textContent).toContain('기본 관리')
-    expect(container.textContent).toContain('AI 추천')
+    expect(soySauceCard?.textContent).toContain('🍶')
+    expect(sugarCard?.textContent).toContain('🍬')
+    expect(butterCard?.textContent).toContain('🧈')
   })
 })

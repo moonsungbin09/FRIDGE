@@ -58,15 +58,15 @@ export const generateRecipeSummary = async (prompt: string): Promise<string> => 
           {
             role: "system",
             content:
-              "You summarize recipes clearly and briefly for home cooks based on available ingredients.",
+              "너는 냉장고 재료 기반으로 레시피를 한국어로 쉽고 간결하게 요약하는 요리 도우미야.",
           },
           {
             role: "user",
             content: prompt,
           },
         ],
-        temperature: 0.4,
-        max_tokens: 180,
+        max_completion_tokens: 180,
+        reasoning_effort: "minimal",
       }),
       signal: abortController.signal,
     });

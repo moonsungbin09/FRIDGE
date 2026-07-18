@@ -1,7 +1,7 @@
-import type { RecipeMatchResult } from '../lib/recipeMatcher'
+import type { RecipeSuggestion } from '../types'
 
 type RecipeSuggestionsProps = {
-  recipes: RecipeMatchResult[]
+  recipes: RecipeSuggestion[]
   selectedRecipeId: string | null
   onSelectRecipe: (recipeId: string) => void
 }
@@ -11,7 +11,7 @@ export function RecipeSuggestions({ recipes, selectedRecipeId, onSelectRecipe }:
     <section>
       <h2>추천 메뉴</h2>
       {recipes.length === 0 ? (
-        <p className="empty-state">추천 가능한 메뉴가 없어요. 재료를 더 추가해보세요.</p>
+        <p className="empty-state">AI 추천 결과가 없어요. 재료를 더 추가해보세요.</p>
       ) : (
         <ul className="recipe-list">
           {recipes.map((recipe) => {

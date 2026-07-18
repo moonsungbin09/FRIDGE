@@ -21,3 +21,15 @@ export const getAzureOpenAiConfig = (): AzureOpenAiConfig => ({
   deployment: getRequiredEnv("AZURE_OPENAI_DEPLOYMENT"),
   apiVersion: getRequiredEnv("AZURE_OPENAI_API_VERSION"),
 });
+
+export type FoundryResponsesConfig = {
+  endpoint: string;
+  apiKey: string;
+  model: string;
+};
+
+export const getFoundryResponsesConfig = (): FoundryResponsesConfig => ({
+  endpoint: getRequiredEnv("FOUNDRY_RESPONSES_ENDPOINT"),
+  apiKey: getRequiredEnv("FOUNDRY_API_KEY"),
+  model: process.env.FOUNDRY_MODEL?.trim() || "gpt-5.4-nano",
+});

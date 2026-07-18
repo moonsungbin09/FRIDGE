@@ -21,5 +21,5 @@ test("buildRecipeSummaryPrompt trims surrounding whitespace from recipe name", (
     missingIngredients: [],
   });
 
-  assert.match(prompt, /Recipe name: Kimchi Fried Rice/);
+  assert.match(prompt, /레시피 이름: Kimchi Fried Rice/);
 });
