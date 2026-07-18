@@ -69,4 +69,15 @@ describe('App recipe flow', () => {
     expect(container.textContent).toContain('토마토와 치즈를 활용해 만드는 간단한 홈스타일 파스타입니다.')
     expect(container.textContent).toContain('Required ingredients: 토마토, 치즈, 면')
   })
+
+  it('홈 화면에서 냉장고 히어로 문구와 액션 버튼이 보인다', async () => {
+    await act(async () => {
+      root.render(<App />)
+    })
+
+    expect(container.textContent).toContain('오늘 냉장고 뭐 먹지?')
+    expect(container.textContent).toContain('냉장고 속 재료로 맛있는 메뉴를 추천받아보세요.')
+    expect(container.textContent).toContain('재료 관리하기')
+    expect(container.textContent).toContain('레시피 보러가기')
+  })
 })

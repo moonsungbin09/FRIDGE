@@ -6,25 +6,38 @@ type HomeScreenProps = {
 export function HomeScreen({ onManageIngredients, onOpenRecipes }: HomeScreenProps) {
   return (
     <main className="home-screen">
-      <header>
-        <h1>Fridge App</h1>
-        <p>Track your ingredients locally and start recipe discovery from one place.</p>
-      </header>
+      <section className="home-hero">
+        <div className="home-hero-visual" aria-hidden>
+          <div className="fridge-illustration">
+            <span className="fridge-emoji">🧊</span>
+            <span className="food food-a">🥕</span>
+            <span className="food food-b">🍅</span>
+            <span className="food food-c">🥛</span>
+          </div>
+        </div>
+        <div className="home-hero-content">
+          <h1>냉장고 앱</h1>
+          <h2>오늘 냉장고 뭐 먹지?</h2>
+          <p>냉장고 속 재료로 맛있는 메뉴를 추천받아보세요.</p>
+        </div>
+      </section>
 
       <section className="home-actions">
         <article className="action-card">
-          <h2>Ingredient Management</h2>
-          <p>Add and remove ingredients from your fridge list.</p>
+          <p className="action-badge">기본 관리</p>
+          <h2>재료 관리</h2>
+          <p>냉장고에 있는 재료를 추가하거나 삭제할 수 있어요.</p>
           <button type="button" onClick={onManageIngredients}>
-            Manage ingredients
+            재료 관리하기
           </button>
         </article>
 
         <article className="action-card">
-          <h2>Recipe Recommendation</h2>
-          <p>Use your saved ingredients to get recipe ideas.</p>
+          <p className="action-badge">AI 추천</p>
+          <h2>레시피 추천</h2>
+          <p>저장된 재료를 기반으로 맛있는 메뉴를 추천받을 수 있어요.</p>
           <button type="button" onClick={onOpenRecipes}>
-            Find recipes
+            레시피 보러가기
           </button>
         </article>
       </section>
