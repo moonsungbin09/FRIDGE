@@ -60,6 +60,8 @@ function getIngredientEmoji(ingredientName: string): string {
   if (source.includes('버터')) return '🧈'
   if (source.includes('소금')) return '🧂'
   if (source.includes('후추')) return '🌶️'
+  if (source.includes('김치')) return '🥬'
+  if (source.includes('두부')) return '🫘'
   if (source.includes('토마토')) return '🍅'
   if (source.includes('치즈')) return '🧀'
   if (source.includes('달걀') || source.includes('계란')) return '🥚'
@@ -70,7 +72,7 @@ function getIngredientEmoji(ingredientName: string): string {
   if (source.includes('고추')) return '🌶️'
   if (source.includes('밥')) return '🍚'
   if (source.includes('면')) return '🍜'
-  if (source.includes('식용유') || source.includes('오일') || source.includes('기름')) return '🫗'
+  if (source.includes('식용유') || source.includes('오일') || source.includes('기름')) return '🫒'
   return '🥣'
 }
 

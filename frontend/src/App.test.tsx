@@ -47,8 +47,8 @@ describe('App recipe flow', () => {
               id: 'ai-1',
               name: '당근 볶음',
               summary: '당근을 달콤짭짤하게 볶아 만드는 반찬입니다.',
-              requiredIngredients: ['당근', '간장', '설탕', '식용유', '버터(선택)'],
-              missingIngredients: ['간장', '설탕', '식용유'],
+              requiredIngredients: ['당근', '김치', '두부', '간장', '설탕', '식용유', '버터(선택)'],
+              missingIngredients: ['간장', '설탕', '식용유', '김치', '두부'],
               steps: ['당근을 채 썬다', '양념을 섞는다', '팬에서 볶아 완성한다'],
             },
           ],
@@ -110,10 +110,22 @@ describe('App recipe flow', () => {
     const butterCard = Array.from(container.querySelectorAll('.ingredient-card.optional')).find((card) =>
       card.textContent?.includes('버터'),
     )
+    const kimchiCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
+      card.textContent?.includes('김치'),
+    )
+    const tofuCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
+      card.textContent?.includes('두부'),
+    )
+    const oilCard = Array.from(container.querySelectorAll('.ingredient-card')).find((card) =>
+      card.textContent?.includes('식용유'),
+    )
 
     expect(soySauceCard?.textContent).toContain('🍶')
     expect(sugarCard?.textContent).toContain('🍬')
     expect(butterCard?.textContent).toContain('🧈')
+    expect(kimchiCard?.textContent).toContain('🥬')
+    expect(tofuCard?.textContent).toContain('🫘')
+    expect(oilCard?.textContent).toContain('🫒')
   })
 
   it('AI 추천이 실패해도 기본 레시피 추천을 보여준다', async () => {
