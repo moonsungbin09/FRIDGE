@@ -78,10 +78,12 @@ function IngredientCards({
   title,
   items,
   emptyMessage,
+  cardType,
 }: {
   title: string
   items: IngredientCardItem[]
   emptyMessage: string
+  cardType: 'required' | 'missing'
 }) {
   return (
     <section className="ingredient-section">
@@ -91,12 +93,15 @@ function IngredientCards({
       ) : (
         <div className="ingredient-grid">
           {items.map((item) => (
-            <article key={`${title}-${item.name}`} className={`ingredient-card ${item.isOptional ? 'optional' : 'required'}`}>
+            <article
+              key={`${title}-${item.name}`}
+              className={`ingredient-card ${cardType} ${item.isOptional ? 'optional' : 'required'}`}
+            >
               <span className="ingredient-card-image" aria-hidden>
                 {getIngredientEmoji(item.name)}
               </span>
               <strong>{item.name}</strong>
-              <small>{item.isOptional ? '선택 재료' : '필수 재료'}</small>
+              <small>{cardType === 'missing' ? '부족 재료' : item.isOptional ? '선택 재료' : '필수 재료'}</small>
             </article>
           ))}
         </div>
@@ -130,19 +135,26 @@ export function RecipeDetail({ status, recipe, errorMessage }: RecipeDetailProps
             title="필요한 재료"
             items={requiredItems}
             emptyMessage="등록된 재료 정보가 없어요."
+            cardType="required"
           />
           <IngredientCards
             title="부족한 재료"
             items={missingItems}
             emptyMessage="현재 부족한 재료가 없어요."
+            cardType="missing"
           />
-          {recipe.steps.length > 0 && (
-            <ol>
-              {recipe.steps.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ol>
-          )}
+          <section className="ingredient-section">
+            <h4>만드는 방법</h4>
+            {recipe.steps.length > 0 ? (
+              <ol>
+                {recipe.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            ) : (
+              <p className="empty-state">조리 방법 정보가 아직 없어요.</p>
+            )}
+          </section>
         </article>
       )}
     </section>

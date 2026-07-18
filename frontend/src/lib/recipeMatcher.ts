@@ -16,22 +16,32 @@ export function findRecipeMatches(ingredients: IngredientName[]): RecipeMatchRes
     return []
   }
 
-  return recipeMatches
+  const scored = recipeMatches
     .map((recipe) => {
+      const normalizedRequired = recipe.requiredIngredients.map(normalizeIngredient)
+      const matchedCount = normalizedRequired.filter((ingredient) => ingredientSet.has(ingredient)).length
       const missingIngredients = recipe.requiredIngredients.filter(
         (ingredient) => !ingredientSet.has(normalizeIngredient(ingredient)),
       )
 
       return {
         ...recipe,
+        matchedCount,
         missingIngredients,
-        steps: [],
+        steps: recipe.steps,
       }
     })
-    .filter((recipe) => recipe.missingIngredients.length < recipe.requiredIngredients.length)
-    .sort(
-      (left, right) =>
-        left.missingIngredients.length - right.missingIngredients.length ||
-        left.name.localeCompare(right.name, 'ko-KR'),
-    )
+    .sort((left, right) => {
+      if (right.matchedCount !== left.matchedCount) {
+        return right.matchedCount - left.matchedCount
+      }
+
+      if (left.missingIngredients.length !== right.missingIngredients.length) {
+        return left.missingIngredients.length - right.missingIngredients.length
+      }
+
+      return left.name.localeCompare(right.name, 'ko-KR')
+    })
+
+  return scored.filter((recipe) => recipe.missingIngredients.length < recipe.requiredIngredients.length)
 }

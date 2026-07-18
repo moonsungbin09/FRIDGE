@@ -23,4 +23,27 @@ describe('findRecipeMatches', () => {
 
     expect(matches.length).toBeGreaterThanOrEqual(4)
   })
+
+  it('recommends only related dishes for a single ingredient like 김치', () => {
+    const matches = findRecipeMatches(['김치'])
+
+    expect(matches.length).toBeGreaterThan(0)
+    for (const recipe of matches) {
+      expect(recipe.requiredIngredients).toContain('김치')
+    }
+
+    expect(matches.some((recipe) => recipe.name.includes('김치찌개'))).toBe(true)
+    expect(matches.some((recipe) => recipe.name.includes('김치전'))).toBe(true)
+    expect(matches.some((recipe) => recipe.name.includes('김치 볶음밥'))).toBe(true)
+    expect(matches.some((recipe) => recipe.name.includes('토마토'))).toBe(false)
+  })
+
+  it('keeps detailed steps for related fallback recipes', () => {
+    const matches = findRecipeMatches(['김치'])
+
+    expect(matches.length).toBeGreaterThan(0)
+    for (const recipe of matches) {
+      expect(recipe.steps.length).toBeGreaterThanOrEqual(5)
+    }
+  })
 })

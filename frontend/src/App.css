@@ -155,6 +155,12 @@
 }
 
 .ingredient-card.optional {
+  background: #fef9c3;
+  border-color: #facc15;
+  color: #713f12;
+}
+
+.ingredient-card.missing {
   background: #fee2e2;
   border-color: #f87171;
   color: #7f1d1d;

@@ -5,6 +5,7 @@ import { RecipeDetail } from './components/RecipeDetail'
 import type { RecipeDetailStatus } from './components/RecipeDetail'
 import { RecipeSuggestions } from './components/RecipeSuggestions'
 import { getIngredients } from './lib/ingredientStorage'
+import { findRecipeMatches } from './lib/recipeMatcher'
 import { fetchRecipeRecommendations } from './lib/recipeApi'
 import type { RecipeSuggestion } from './types'
 import './App.css'
@@ -46,6 +47,8 @@ function App() {
     setSelectedRecipeId(null)
 
     const loadRecommendations = async () => {
+      const fallbackRecipes = findRecipeMatches(availableIngredients)
+
       try {
         const recipes = await fetchRecipeRecommendations(availableIngredients, abortController.signal)
         if (abortController.signal.aborted) {
@@ -59,9 +62,11 @@ function App() {
           return
         }
 
-        setRecommendations([])
-        setRecommendationsStatus('error')
-        setRecommendationsError('AI 레시피 추천을 불러오지 못했습니다.')
+        setRecommendations(fallbackRecipes)
+        setRecommendationsStatus('ready')
+        setRecommendationsError(
+          fallbackRecipes.length > 0 ? null : 'AI 레시피 추천을 불러오지 못했습니다.',
+        )
       }
     }
 
